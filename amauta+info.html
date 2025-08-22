@@ -125,17 +125,22 @@
 
   </head>
   <body class="bg-gray-50 flex flex-col min-h-screen">
-    <div class="p-6 flex-grow">
-      <!-- Encabezado -->
-      <header class="flex justify-between items-center bg-primary text-primary-foreground p-4 rounded-lg shadow">
-        <div class="flex items-center">
-          <img src="logo_blanco_sin_ipa.png" alt="logo" class="w-16 h-16 mr-3" />
-          <h1 class="text-2xl font-bold">Amauta + Info</h1>
-        </div>
-        <div class="flex items-center">
-          <span>¡Hola, Amautino!</span>
-        </div>
-      </header>
+  <!-- Encabezado -->
+  <header class="flex justify-between items-center bg-primary text-primary-foreground p-4 shadow w-full">
+    <div class="flex items-center">
+      <img src="logo_blanco_sin_ipa.png" alt="logo" class="w-16 h-16 mr-3" />
+      <h1 class="text-2xl font-bold">Amauta + Info</h1>
+    </div>
+    <div class="flex items-center">
+      <span>¡Hola, Amautino!</span>
+    </div>
+  </header>
+
+  <!-- Contenido -->
+  <div class="p-6 flex-grow">
+    <!-- Aquí va tu contenido -->
+  </div>
+</body>
 
       <!-- Cuadrados/Módulos -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
@@ -203,14 +208,23 @@
   <img aria-hidden="true" alt="manual de pagos" src="robot_ipa.png" class="mx-auto"/>
   <h3 class="text-center mt-2">Amauta IA</h3>
 </div>
+
 <!-- Tarjeta para abrir el Taller de tesis -->
 <div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1FGCM5TTLdCndlizgfKWjfWPfhbDIwcHb/preview'
+  'https://drive.google.com/file/d/1P7QSHV9oPAmTZ0O5IJGrRLW7fK9kRWCo/preview'
 )">
-  <img aria-hidden="true" alt="Tarifario" src="Reglamento_Prac_Invest.png" class="mx-auto"/>
+  <img aria-hidden="true" alt="Tarifario" src="TallerTesis.jpeg" class="mx-auto"/>
   <h3 class="text-center mt-2">Taller de Tesis</h3>
 </div>
-        
+
+<!-- Tarjeta para abrir el Titulación -->
+<div class="pdf-card" onclick="showPDF(
+  'https://drive.google.com/file/d/15qdNJNs7V4DnGNE8RZ0ZaWY9gfclYBnc/preview'
+)">
+  <img aria-hidden="true" alt="Tarifario" src="Titulacion.jpeg" class="mx-auto"/>
+  <h3 class="text-center mt-2">Programa de Titulación</h3>
+</div>
+
 <!-- Modal que muestra el PDF -->
 <div id="pdfModal" class="modal">
   <div class="modal-content">
@@ -249,83 +263,229 @@
       </div>
     </div>
 
+<!-- Carrusel de iconos -->
+<div class="carousel-container">
+  <button class="carousel-btn prev">&#10094;</button>
+  <div class="carousel-track-container">
+    <ul class="carousel-track">
+
+  <li class="carousel-item">
+  <a href="https://www.youtube.com/shorts/Ktn_FEPxYdk" target="_blank" rel="noopener noreferrer">
+    <img src="AplicativoMovil_Amauta+.jpg" alt="icono1" 
+         style="width:150px; height:auto; object-fit:contain; border-radius:12px;">
+  </a>
+</li>
+
+<li class="carousel-item">
+  <a href="https://amauta.q10.com" target="_blank" rel="noopener noreferrer">
+    <img src="sistema_tramites_q10.jpg" alt="icono1" 
+         style="width:150px; height:auto; object-fit:contain; border-radius:12px;">
+  </a>
+</li>
+<li class="carousel-item">
+  <a href="https://iespamauta.novosofterp.pro/ecommerce" target="_blank" rel="noopener noreferrer">
+    <img src="tienda_virtual.jpg" alt="icono1" 
+         style="width:150px; height:auto; object-fit:contain; border-radius:12px;">
+  </a>
+</li>
+<li class="carousel-item">
+  <a href="https://biblioteca.concytec.gob.pe/" target="_blank" rel="noopener noreferrer">
+    <img src="digitaliaBibloteca.jpg" alt="icono1" 
+         style="width:150px; height:auto; object-fit:contain; border-radius:12px;">
+  </a>
+</li>
 
 
 
+    </ul>
+  </div>
+  <button class="carousel-btn next">&#10095;</button>
+</div>
 
-    <!-- Pie de página -->
-    <footer class="bg-primary text-primary-foreground mt-8 p-6">
-      <!-- Título -->
-      <h2 class="text-lg font-semibold text-center">Nuestros Servicios</h2>
-      
-      <!-- Imágenes de servicios -->
-      <div class="flex justify-center gap-4 mt-4">  
-        <img 
-        src="tienda_virtual.jpg" 
-        alt="Servicio 1" 
-        class="rounded-lg shadow cursor-pointer" 
-        width="20%" 
-        onclick="window.open('https://iespamauta.pseperu.com/ecommerce', '_blank')" 
-/>
-        
-        <img 
-        src="AplicativoMovil_Amauta+.jpg" 
-        alt="Servicio 1" 
-        class="rounded-lg shadow cursor-pointer" 
-        width="20%" 
-        onclick="window.open('https://play.google.com/store/apps/details?id=com.q10soluciones.amauta&hl=es_419', '_blank')" 
-/>
+<style>
+.carousel-container {
+  position: relative;
+  max-width: 900px;
+  margin: 40px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-        <img src="digitaliaBibloteca.jpg" 
-        alt="Servicio 3" 
-        class="rounded-lg shadow" 
-        width="20%" 
-        onclick="window.open('https://amauta.q10.com/BibliotecasVirtuales/Estudiante?aplentInstitucion=dc07df3b-7074-44b0-8461-3634f66ed1ab', '_blank')"  
-/>
-        <img src="sistema_tramites_q10.jpg" 
-alt="Servicio 3" 
-class="rounded-lg shadow" 
-width="20%" 
-onclick="window.open('https://amauta.q10.com/BibliotecasVirtuales/Estudiante?aplentInstitucion=dc07df3b-7074-44b0-8461-3634f66ed1ab', '_blank')"  
-/>
+.carousel-track-container {
+  overflow: hidden;
+  width: 100%;
+}
 
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
 
+.carousel-item {
+  min-width: 25%; /* 4 elementos visibles */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
 
-      </div>
+.carousel-item img {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
 
-      <!-- Información de contacto -->
-      <div class="mt-6 text-center">
-        <p>Contacto: +51 974 329 311</p>
-        <button
-          class="mt-4 bg-secondary text-secondary-foreground hover:bg-secondary/80 px-6 py-2 rounded-lg"
-          onclick="redirectToWhatsApp()"
-        >
-          Soporte vía WhatsApp
-        </button>
-      </div>
+.carousel-item img:hover {
+  transform: scale(1.1);
+}
 
-      <!-- Derechos reservados -->
-      <p class="text-center mt-6 text-sm">
-        Todos los derechos reservados - Instituto Pedagógico Amauta
-      </p>
-    </footer>
+.carousel-btn {
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  font-size: 30px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.3s;
+  z-index: 2;
+}
 
-    <script>
-      // Redirigir a un archivo específico
-      function redirectTo(url) {
-        window.open(url, '_blank');
-      }
+.carousel-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
 
-      // Redirigir a un módulo interno
-      function redirectToModule(moduleName) {
-        alert(`Abriendo el módulo: ${moduleName}`);
-      }
+.prev {
+  position: absolute;
+  left: -50px;
+}
 
-      // Redirigir a WhatsApp
-      function redirectToWhatsApp() {
-        window.open('https://wa.me/51999999999', '_blank');
-      }
-    </script>
-  </body>
+.next {
+  position: absolute;
+  right: -50px;
+}
+</style>
+
+<script>
+const track = document.querySelector(".carousel-track");
+const prevBtn = document.querySelector(".prev");
+const nextBtn = document.querySelector(".next");
+const items = document.querySelectorAll(".carousel-item");
+
+let index = 0;
+const itemsPerView = 4;
+const totalItems = items.length;
+
+function updateCarousel() {
+  const slideWidth = items[0].getBoundingClientRect().width;
+  track.style.transform = `translateX(-${index * slideWidth}px)`;
+}
+
+nextBtn.addEventListener("click", () => {
+  if (index < totalItems - itemsPerView) {
+    index++;
+    updateCarousel();
+  }
+});
+
+prevBtn.addEventListener("click", () => {
+  if (index > 0) {
+    index--;
+    updateCarousel();
+  }
+});
+</script>
+</script>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <h4>Nosotros</h4>
+      <p style="margin:0 0 8px">Líderes en Innovación Educativa</p>
+      <a href="https://amauta.q10.com/SolicitudesInstitucionales/NuevaSolicitud" target="_blank">Libro de Reclamaciones</a>
+    </div>
+    <div>
+      <h4>Servicios</h4>
+      <ul style="margin:0;padding-left:18px">
+        <li>- Biblioteca Institucional</li>
+        <li>- Atención y seguimiento al Alumno</li>
+        <li>- Plataformas Institucionales</li>
+        <li>- Aplicativo Movil</li>
+        <li>- Bolsa Laboral</li>
+        <li>- Portal Informativo</li>
+        <li>- Créditos y Cobranza</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Programas</h4>
+      <ul style="margin:0;padding-left:18px">
+        <li>- Educación Inicial</li>
+        <li>- Educación Primaria</li>
+        <li>- Educación Secundaria en especialidad Ciencias Sociales</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contacto</h4>
+      <p style="margin:0 0 8px"> -Av. 9 de diciembre 321, Cercado de Lima</p> <br>
+      <p style="margin:0"> -Celular: 974 329 311</p>
+    </div>
+  </div>
+<br>
+  <div class="copyright">© 2025 Portal Informativo Institucional IPA - AMAUTA.</div>
+
+  <!-- Rayas verticales -->
+  <div class="v-line" style="left:5%;"></div>
+  <div class="v-line" style="left:15%;"></div>
+  <div class="v-line" style="left:25%;"></div>
+  <div class="v-line" style="left:35%;"></div>
+  <div class="v-line" style="left:50%;"></div>
+  <div class="v-line" style="left:65%;"></div>
+  <div class="v-line" style="left:80%;"></div>
+</footer>
+
+<style>
+.footer {
+  position: relative;
+  color: #fff;
+  background: #00055A;
+  padding: 40px 20px;
+  overflow: hidden;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+  gap: 20px;
+  z-index: 2;
+  position: relative;
+}
+
+.footer h4, .footer a, .copyright {
+  position: relative;
+  z-index: 2; /* contenido encima del fondo */
+}
+
+/* Rayas verticales */
+.v-line {
+  position: absolute;
+  top: -150px; /* iniciar fuera del footer */
+  width: 2px;
+  height: 150px;
+  background: rgba(0, 212, 255, 0.5);
+  border-radius: 1px;
+  animation: dropLine 6s linear infinite; /* velocidad intermedia */
+}
+
+/* Animación de caída vertical */
+@keyframes dropLine {
+  0% { top: -150px; opacity: 0; }
+  50% { opacity: 0.6; }
+  100% { top: 100%; opacity: 0; }
+}
+</style>
+</body>
 </html>
+
 
