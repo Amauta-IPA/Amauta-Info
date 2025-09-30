@@ -218,6 +218,13 @@
   <img aria-hidden="true" alt="Tarifario" src="tituloP.png" class="mx-auto"/>
   <h3 class="text-center mt-2">Programa de Titulación</h3>
 </div>
+<!-- Tarjeta para abrir el Reglamento de Practica Preprofesional -->
+<div class="pdf-card" onclick="showPDF(
+  'https://drive.google.com/file/d/1eVDAPc8b9UwuiuGIVpW-D-ZpTgNiEdJS/preview' 
+)">
+  <img aria-hidden="true" alt="Tarifario" src="Reglamento_Prac_Invest.png" class="mx-auto"/>
+  <h3 class="text-center mt-2">Reglamento y Fichas de Práctica PreProfesional</h3>
+</div>
 
 <!-- Modal que muestra el PDF -->
 <div id="pdfModal" class="modal">
@@ -226,13 +233,6 @@
       <iframe id="pdfViewer"></iframe>
   </div>
 
-<!-- Tarjeta para abrir el Reglamento de Practica Preprofesional -->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1eVDAPc8b9UwuiuGIVpW-D-ZpTgNiEdJS/preview' 
-)">
-  <img aria-hidden="true" alt="Tarifario" src="Reglamento_Prac_Invest.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Reglamento y Fichas de Práctica PreProfesional</h3>
-</div>
 
 </div>
 
@@ -517,6 +517,7 @@ prevBtn.addEventListener("click", () => {
 </style>
 </body>
 </html>
+
 
 
 
