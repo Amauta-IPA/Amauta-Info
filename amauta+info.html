@@ -1,587 +1,536 @@
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <script type="text/javascript">
-      window.tailwind.config = {
-        darkMode: ['class'],
-        theme: {
-          extend: {
-            colors: {
-              primary: {
-                DEFAULT: '#00055A',
-                foreground: '#FFFFFF',
-              },
-              secondary: {
-                DEFAULT: '#3B82F6',
-                foreground: '#FFFFFF',
-              },
-              card: {
-                DEFAULT: '#E0F2FE', /* Celeste claro */
-                foreground: '#000000',
-                hover: '#38BDF8', /* Celeste oscuro */
-              },
-              border: '#E5E7EB',
-            },
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Amauta + Info</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <script>
+    window.tailwind = window.tailwind || {};
+    window.tailwind.config = {
+      darkMode: ['class'],
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: '#00055A', foreground: '#FFFFFF' },
+            secondary: { DEFAULT: '#3B82F6', foreground: '#FFFFFF' },
+            card: { DEFAULT: '#E0F2FE', foreground: '#000000', hover: '#38BDF8' },
+            border: '#E5E7EB',
           },
+          boxShadow: {
+            card: '0 4px 14px rgba(0,0,0,0.12)',
+            modal: '0 12px 32px rgba(0,0,0,0.35)',
+          },
+          borderRadius: { xl: '14px' }
         },
-      };
-    </script>
-<script>
-      function showPDF(pdfUrl) {
-        document.getElementById("pdfModal").style.display = "flex";
-        document.getElementById("pdfViewer").src = pdfUrl;
-      }
+      },
+    };
+  </script>
 
-      function closePDF() {
-        document.getElementById("pdfModal").style.display = "none";
-        document.getElementById("pdfViewer").src = "";
-      }
-</script>
-<style>
-   /* Estilos del modal */
-   .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.7);
-        justify-content: center;
-        align-items: center;
+  <style>
+    /* ===== Modal reducido y elegante ===== */
+    .modal-root {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+    .modal-root.is-open { display: flex; }
+
+    .modal-card {
+      background: #fff;
+      border-radius: 14px;
+      width: 94%;
+      max-width: 980px;
+      height: 68vh;
+      display: flex; flex-direction: column; position: relative;
+      box-shadow: var(--tw-shadow, 0 0 #0000), 0 12px 32px rgba(0,0,0,0.35);
+    }
+    @media (min-width: 640px){ .modal-card { width: 82%; height: 66vh; } }
+    @media (min-width: 1024px){ .modal-card { width: 56%; height: 64vh; } }
+
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; border-bottom: 1px solid #E5E7EB; gap: 8px;
+    }
+    .modal-title {
+      font-weight: 600; font-size: 0.98rem; color: #111827;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .modal-actions a {
+      font-size: 0.85rem; padding: 6px 10px; border-radius: 8px;
+      border: 1px solid #E5E7EB; transition: all .2s ease;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .modal-actions a:hover { background: #F3F4F6; }
+    .modal-body { flex: 1; display: flex; padding: 10px; }
+    .modal-body iframe {
+      width: 100%; height: 100%; border: none; border-radius: 10px; background: #f9fafb;
     }
 
-    /* Caja blanca que contiene el PDF */
-    .modal-content {
-        background: white;
-        padding: 15px;
-        border-radius: 10px;
-        width: 60%;
-        height: 80%;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    /* Botón de cierre cuadrado, flotante y externo */
+    .modal-close {
+      position: absolute; top: -18px; right: -18px;
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 18px; border-radius: 6px; cursor: pointer;
+      background: #fff; color: #111827; border: 2px solid #000; box-shadow: 2px 2px 6px rgba(0,0,0,.3);
+    }
+    .modal-close:hover { background: #000; color: #fff; }
+
+    /* ===== Card estilo pro ===== */
+    .card {
+      background: #f7f7f7;
+      padding: 18px;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      cursor: pointer;
+      text-align: center;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .card:hover { transform: translateY(-2px); background: #f0f0f0; }
+    .card img { width: 118px; height: auto; margin-left: auto; margin-right: auto; }
+
+    /* ===== Carrusel refinado ===== */
+    .carousel-container {
+      position: relative;
+      max-width: 1100px;
+      margin: 36px auto 8px auto;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 8px;
+    }
+    .carousel-track-container { overflow: hidden; width: 100%; }
+    .carousel-track { display: flex; transition: transform 0.5s ease-in-out; }
+    .carousel-item { min-width: 25%; display: flex; justify-content: center; align-items: center; padding: 14px; }
+    .carousel-item img { width: 120px; height: auto; object-fit: contain; border-radius: 12px; transition: transform 0.3s ease; }
+    .carousel-item img:hover { transform: scale(1.06); }
+
+    .carousel-btn {
+      background: rgba(0,0,0,0.5); border: none; color: #fff; font-size: 26px;
+      padding: 8px 12px; cursor: pointer; border-radius: 9999px; transition: background 0.3s;
+      z-index: 2;
+    }
+    .carousel-btn:hover { background: rgba(0,0,0,0.8); }
+    .carousel-btn.prev { position: absolute; left: -6px; }
+    .carousel-btn.next { position: absolute; right: -6px; }
+    @media (max-width: 640px){
+      .carousel-item { min-width: 50%; }
+      .carousel-btn.prev { left: 2px; }
+      .carousel-btn.next { right: 2px; }
     }
 
-    /* Botón cuadrado con la "X" FUERA del modal */
-    .close-btn {
-        position: absolute;
-        top: -20px;
-        right: -20px;
-        width: 35px;
-        height: 35px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        background: white;
-        border: 2px solid black;
-        color: black;
-        cursor: pointer;
-        font-weight: bold;
-        border-radius: 5px;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    /* ===== Footer líneas animadas ===== */
+    .v-line {
+      position: absolute; top: -150px; width: 2px; height: 150px;
+      background: rgba(0,212,255,0.5); border-radius: 1px; animation: dropLine 6s linear infinite;
     }
-
-    .close-btn:hover {
-        background: black;
-        color: white;
+    @keyframes dropLine {
+      0% { top: -150px; opacity: 0; }
+      50% { opacity: .6; }
+      100% { top: 100%; opacity: 0; }
     }
+  </style>
+</head>
 
-    /* Tamaño reducido del PDF para permitir zoom manual */
-    iframe {
-        width: 100%;
-        height: 90%;
-        margin: auto;
-        border: none;
-    }
+<body class="bg-gray-50 flex flex-col min-h-screen">
 
-    /* Estilo para las tarjetas */
-    .pdf-card {
-        background: #f3f3f3;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-        cursor: pointer;
-        text-align: center;
-        transition: all 0.3s ease;
-        display: inline-block;
-        margin: 10px;
-    }
-
-    .pdf-card:hover {
-        background: #ddd;
-    }
-
-    .pdf-card img {
-        width: 120px;
-        height: auto;
-    }
-</style>
-
-  </head>
-  <body class="bg-gray-50 flex flex-col min-h-screen">
-  <!-- Encabezado -->
-  <header class="flex justify-between items-center bg-primary text-primary-foreground p-4 shadow w-full">
-    <div class="flex items-center">
-      <img src="logo_blanco_sin_ipa.png" alt="logo" class="w-16 h-16 mr-3" />
-      <h1 class="text-2xl font-bold">Amauta + Info</h1>
-    </div>
-    <div class="flex items-center">
-      <span>¡Hola, Amautino!</span>
+  <!-- Header compacto y pro -->
+  <header class="w-full bg-primary text-primary-foreground shadow">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="logo_blanco_sin_ipa.png" alt="Logo IPA Amauta" class="w-12 h-12 sm:w-14 sm:h-14"/>
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight">Amauta + Info</h1>
+      </div>
+      <div class="text-sm sm:text-base">¡Hola, Amautino!</div>
     </div>
   </header>
-</body>
-      <!-- Cuadrados/Módulos -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
 
-<!-- Tarjeta para abrir el GUIA DEL ESTUDIANTE AMAUTINO -->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1Jhc15RgxpRdk0Y6FO2Fg4fFbIelbxopo/preview'
-)">
-  <img aria-hidden="true" alt="Tarifario" src="Guia_Estudiante.png" class="mx-auto" />
-  <h3 class="text-center mt-2">Guía del Estudiante Amautino</h3>
-</div>
+  <!-- Contenido -->
+  <main class="w-full">
+    <section class="max-w-7xl mx-auto px-3 sm:px-4 py-6">
+      <!-- Grid cards - márgenes laterales compactos -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
 
-<!-- Tarjeta para abrir el REGLAMENTO INSTITUCIONAL -->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1MdBCBFthQHZGXhz8FGhvHVgbU8GWMb81/preview'
-)">
-  <img aria-hidden="true" alt="manual de pagos" src="Reglamento_Institucional.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Reglamento Institucional</h3>
-</div>
+        <!-- Guía del Estudiante -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Guía del Estudiante Amautino"
+             data-preview="https://drive.google.com/file/d/1Jhc15RgxpRdk0Y6FO2Fg4fFbIelbxopo/preview"
+             data-fileid="1Jhc15RgxpRdk0Y6FO2Fg4fFbIelbxopo">
+          <img src="Guia_Estudiante.png" alt="Guía del Estudiante"/>
+          <h3 class="text-center mt-2 font-medium">Guía del Estudiante Amautino</h3>
+        </div>
 
-<!-- Tarjeta para abrir el CANALES DE ATENCION -->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1dnJeiJtgIehmdDRL9ZrBmbbWoEqYjJaH/preview'
-)">
-  <img aria-hidden="true" alt="Tarifario" src="Canales_Atencion.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Canales de Atención</h3>
-</div>
+        <!-- Reglamento Institucional -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Reglamento Institucional"
+             data-preview="https://drive.google.com/file/d/1MdBCBFthQHZGXhz8FGhvHVgbU8GWMb81/preview"
+             data-fileid="1MdBCBFthQHZGXhz8FGhvHVgbU8GWMb81">
+          <img src="Reglamento_Institucional.png" alt="Reglamento Institucional"/>
+          <h3 class="text-center mt-2 font-medium">Reglamento Institucional</h3>
+        </div>
 
-<!-- Tarjeta para abrir el Manual de Pagos -->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1-GA0ku8F_2ypm3hX5YHtksFPMDCc4BtH/preview'
-)">
-  <img aria-hidden="true" alt="manual de pagos" src="Manual_Pagos.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Manual de Pagos</h3>
-</div>
+        <!-- Canales de Atención -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Canales de Atención"
+             data-preview="https://drive.google.com/file/d/1dnJeiJtgIehmdDRL9ZrBmbbWoEqYjJaH/preview"
+             data-fileid="1dnJeiJtgIehmdDRL9ZrBmbbWoEqYjJaH">
+          <img src="Canales_Atencion.png" alt="Canales de Atención"/>
+          <h3 class="text-center mt-2 font-medium">Canales de Atención</h3>
+        </div>
 
-<!-- Tarjeta para abrir el Tarifario -->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1VLKMPZvYSB0-gzgTFENA2ju-7-gwsBck/preview'
-)">  
-  <img aria-hidden="true" alt="Tarifario" src="Tarifario.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Tarifario</h3>
-</div>
+        <!-- Manual de Pagos -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Manual de Pagos"
+             data-preview="https://drive.google.com/file/d/1-GA0ku8F_2ypm3hX5YHtksFPMDCc4BtH/preview"
+             data-fileid="1-GA0ku8F_2ypm3hX5YHtksFPMDCc4BtH">
+          <img src="Manual_Pagos.png" alt="Manual de Pagos"/>
+          <h3 class="text-center mt-2 font-medium">Manual de Pagos</h3>
+        </div>
 
-<!-- Tarjeta para abrir el ManuaL DE USO Q10  -->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1M6whnPKWByzBVuDd1dHIpS8IrQhybAMl/preview'
-)">
-  <img aria-hidden="true" alt="manual de pagos" src="Manual_Uso_Q10.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Manual de Uso Q10</h3>
-</div>
+        <!-- Tarifario -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Tarifario"
+             data-preview="https://drive.google.com/file/d/1VLKMPZvYSB0-gzgTFENA2ju-7-gwsBck/preview"
+             data-fileid="1VLKMPZvYSB0-gzgTFENA2ju-7-gwsBck">
+          <img src="Tarifario.png" alt="Tarifario"/>
+          <h3 class="text-center mt-2 font-medium">Tarifario</h3>
+        </div>
 
-<!-- Tarjeta para abrir el Reglamento de Practica e Investigación -->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1Nj8DCObHiOSE2qXjEf2-R-3ma3xJbrbR/preview'
-)">
-  <img aria-hidden="true" alt="Tarifario" src="Reglamento_Prac_Invest.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Reglamento de Práctica e Investigación</h3>
-</div>
+        <!-- Manual de Uso Q10 -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Manual de Uso Q10"
+             data-preview="https://drive.google.com/file/d/1M6whnPKWByzBVuDd1dHIpS8IrQhybAMl/preview"
+             data-fileid="1M6whnPKWByzBVuDd1dHIpS8IrQhybAMl">
+          <img src="Manual_Uso_Q10.png" alt="Manual de Uso Q10"/>
+          <h3 class="text-center mt-2 font-medium">Manual de Uso Q10</h3>
+        </div>
 
-<!-- Tarjeta para abrir el modulo de IA -->
-<div class="pdf-card" onclick="showPDF(
-  'https://monica.im/share/bot?botId=qcAnZLpM'
-)">
-  <img aria-hidden="true" alt="manual de pagos" src="robot_ipa.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Amauta IA</h3>
-</div>
+        <!-- Reglamento de Práctica e Investigación -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Reglamento de Práctica e Investigación"
+             data-preview="https://drive.google.com/file/d/1Nj8DCObHiOSE2qXjEf2-R-3ma3xJbrbR/preview"
+             data-fileid="1Nj8DCObHiOSE2qXjEf2-R-3ma3xJbrbR">
+          <img src="Reglamento_Prac_Invest.png" alt="Reglamento de Práctica e Investigación"/>
+          <h3 class="text-center mt-2 font-medium">Reglamento de Práctica e Investigación</h3>
+        </div>
 
-<!-- Tarjeta para abrir el Reglamento de Practica Preprofesional -->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1Z4WmVAlqGQsVo_c2oDZCXvo54LpzaDlp/preview' 
-)">
-  <img aria-hidden="true" alt="Tarifario" src="ReglaPracPrePro.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Reglamento Práctica PreProfesional</h3>
-</div>
-<!-- Tarjeta para abrir el FICHA DE PRACTICA I-VI CICLO -->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1-9pdniSczKBgiuoG-Kmgba-tvV-m6chh/preview' 
-)">
-  <img aria-hidden="true" alt="Tarifario" src="FichaPractica_I - VI.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Ficha de I a VI ciclo de Práctica PreProfesional</h3>
-</div>
-        <!-- Tarjeta para abrir el FICHA DE PRACTICA DE VII A X CICLO-->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1NUopb2H0uiuXLkybIfX2H0sDWOurfJao/preview' 
-)">
-  <img aria-hidden="true" alt="Tarifario" src="FichaPractica_VII - X.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Ficha de VII a X ciclo de Práctica PreProfesional</h3>
-</div>
+        <!-- Amauta IA (enlace externo) -->
+        <a class="card"
+           href="https://monica.im/share/bot?botId=qcAnZLpM"
+           target="_blank" rel="noopener noreferrer"
+           title="Abrir Amauta IA">
+          <img src="robot_ipa.png" alt="Amauta IA"/>
+          <h3 class="text-center mt-2 font-medium">Amauta IA</h3>
+        </a>
 
-          <!-- Tarjeta para abrir el REQUISITOS PARA LA GRADUACIÓN-->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1m2MqQXacx05OGgFc-yg8f7I5b6w_F7EB/preview' 
-)">
-  <img aria-hidden="true" alt="Tarifario" src="RequisitosGraduacion.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Requisitos para la Graduación</h3>
-</div>  
+        <!-- Reglamento Práctica PreProfesional -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Reglamento Práctica PreProfesional"
+             data-preview="https://drive.google.com/file/d/1Z4WmVAlqGQsVo_c2oDZCXvo54LpzaDlp/preview"
+             data-fileid="1Z4WmVAlqGQsVo_c2oDZCXvo54LpzaDlp">
+          <img src="ReglaPracPrePro.png" alt="Reglamento Práctica PreProfesional"/>
+          <h3 class="text-center mt-2 font-medium">Reglamento Práctica PreProfesional</h3>
+        </div>
 
-<!-- Tarjeta para abrir los requisitos y costos del taller de tesis Taller de tesis -->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1P7QSHV9oPAmTZ0O5IJGrRLW7fK9kRWCo/preview'
-)">
-  <img aria-hidden="true" alt="Tarifario" src="tesisTaller.png" class="mx-auto"/>
-  <h3 class="text-center mt-2"> Requitos y Costos del Taller de Tesis</h3>
-</div>
+        <!-- Ficha de I a VI ciclo -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Ficha de I a VI ciclo de Práctica PreProfesional"
+             data-preview="https://drive.google.com/file/d/1-9pdniSczKBgiuoG-Kmgba-tvV-m6chh/preview"
+             data-fileid="1-9pdniSczKBgiuoG-Kmgba-tvV-m6chh">
+          <img src="FichaPractica_I - VI.png" alt="Ficha I a VI ciclo"/>
+          <h3 class="text-center mt-2 font-medium">Ficha de I a VI ciclo de Práctica PreProfesional</h3>
+        </div>
 
-  <!-- Tarjeta para abrir LINEAMIENTOS PARA LA PRESENTACION DE TESIS-->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/1S_DtN2GwAlv11tZvFGH7r9r5aoCDjqlF/preview' 
-)">
-  <img aria-hidden="true" alt="Tarifario" src="lineamientosTesisPresentacion.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Lineamientos Para la Presentación de Tesis</h3>
-</div>
-        
- <!-- Tarjeta para abrir y descargar directamente desde Drive -->
-<div class="pdf-card">
-  <a href="https://drive.google.com/file/d/1uAkLBMbn3_bOrXBUdsPqzMvrl_lboVaK/view?usp=sharing" 
-     target="_blank" 
-     rel="noopener noreferrer" 
-     style="text-decoration:none; color:inherit;">
-    <img aria-hidden="true" alt="Modelo PPT" src="PPTSustentacionTesis.png" class="mx-auto"/>
-    <h3 class="text-center mt-2">Modelo de PPT para Sustentación de Tesis</h3>
-  </a>
-</div>
-        
-<!-- Tarjeta para abrir el Titulación -->
-<div class="pdf-card" onclick="showPDF(
-  'https://drive.google.com/file/d/15qdNJNs7V4DnGNE8RZ0ZaWY9gfclYBnc/preview'
-)">
-  <img aria-hidden="true" alt="Tarifario" src="tituloP.png" class="mx-auto"/>
-  <h3 class="text-center mt-2">Programa de Titulación</h3>
-</div>
+        <!-- Ficha de VII a X ciclo -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Ficha de VII a X ciclo de Práctica PreProfesional"
+             data-preview="https://drive.google.com/file/d/1NUopb2H0uiuXLkybIfX2H0sDWOurfJao/preview"
+             data-fileid="1NUopb2H0uiuXLkybIfX2H0sDWOurfJao">
+          <img src="FichaPractica_VII - X.png" alt="Ficha VII a X ciclo"/>
+          <h3 class="text-center mt-2 font-medium">Ficha de VII a X ciclo de Práctica PreProfesional</h3>
+        </div>
 
-        
-    
-        
-<!-- Modal que muestra el PDF -->
-<div id="pdfModal" class="modal">
-  <div class="modal-content">
-      <button class="close-btn" onclick="closePDF()">✖</button>
-      <iframe id="pdfViewer"></iframe>
+        <!-- Requisitos para la Graduación -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Requisitos para la Graduación"
+             data-preview="https://drive.google.com/file/d/1m2MqQXacx05OGgFc-yg8f7I5b6w_F7EB/preview"
+             data-fileid="1m2MqQXacx05OGgFc-yg8f7I5b6w_F7EB">
+          <img src="RequisitosGraduacion.png" alt="Requisitos para la Graduación"/>
+          <h3 class="text-center mt-2 font-medium">Requisitos para la Graduación</h3>
+        </div>
+
+        <!-- Requisitos y Costos del Taller de Tesis -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Requisitos y Costos del Taller de Tesis"
+             data-preview="https://drive.google.com/file/d/1P7QSHV9oPAmTZ0O5IJGrRLW7fK9kRWCo/preview"
+             data-fileid="1P7QSHV9oPAmTZ0O5IJGrRLW7fK9kRWCo">
+          <img src="tesisTaller.png" alt="Requisitos y Costos del Taller de Tesis"/>
+          <h3 class="text-center mt-2 font-medium">Requisitos y Costos del Taller de Tesis</h3>
+        </div>
+
+        <!-- Lineamientos para la Presentación de Tesis -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Lineamientos para la Presentación de Tesis"
+             data-preview="https://drive.google.com/file/d/1S_DtN2GwAlv11tZvFGH7r9r5aoCDjqlF/preview"
+             data-fileid="1S_DtN2GwAlv11tZvFGH7r9r5aoCDjqlF">
+          <img src="lineamientosTesisPresentacion.png" alt="Lineamientos para la Presentación de Tesis"/>
+          <h3 class="text-center mt-2 font-medium">Lineamientos para la Presentación de Tesis</h3>
+        </div>
+
+        <!-- Modelo de PPT para Sustentación (link directo a Drive) -->
+        <a class="card"
+           href="https://drive.google.com/file/d/1uAkLBMbn3_bOrXBUdsPqzMvrl_lboVaK/view?usp=sharing"
+           target="_blank" rel="noopener noreferrer"
+           title="Abrir Modelo de PPT en Drive">
+          <img src="PPTSustentacionTesis.png" alt="Modelo de PPT para Sustentación de Tesis"/>
+          <h3 class="text-center mt-2 font-medium">Modelo de PPT para Sustentación de Tesis</h3>
+        </a>
+
+        <!-- Programa de Titulación -->
+        <div class="card"
+             role="button" tabindex="0"
+             data-title="Programa de Titulación"
+             data-preview="https://drive.google.com/file/d/15qdNJNs7V4DnGNE8RZ0ZaWY9gfclYBnc/preview"
+             data-fileid="15qdNJNs7V4DnGNE8RZ0ZaWY9gfclYBnc">
+          <img src="tituloP.png" alt="Programa de Titulación"/>
+          <h3 class="text-center mt-2 font-medium">Programa de Titulación</h3>
+
+          <!-- Accesos rápidos bajo la card (opcional) -->
+          <div class="mt-2 flex items-center justify-center gap-2">
+            <a href="https://drive.google.com/file/d/15qdNJNs7V4DnGNE8RZ0ZaWY9gfclYBnc/view?usp=sharing"
+               target="_blank" rel="noopener noreferrer"
+               class="px-3 py-1 rounded bg-secondary text-secondary-foreground text-xs sm:text-sm hover:opacity-90 transition"
+               title="Abrir en Drive">Abrir en Drive</a>
+            <a href="https://drive.google.com/uc?export=download&id=15qdNJNs7V4DnGNE8RZ0ZaWY9gfclYBnc"
+               class="px-3 py-1 rounded border text-xs sm:text-sm hover:bg-gray-100 transition"
+               title="Descargar PDF">Descargar</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Carrusel -->
+    <section class="carousel-container">
+      <button class="carousel-btn prev" aria-label="Anterior">&#10094;</button>
+      <div class="carousel-track-container">
+        <ul class="carousel-track">
+          <li class="carousel-item">
+            <a href="https://www.youtube.com/shorts/Ktn_FEPxYdk" target="_blank" rel="noopener noreferrer" title="Video: Aplicativo Móvil Amauta+">
+              <img src="AplicativoMovil_Amauta+.jpg" alt="Aplicativo Móvil Amauta+">
+            </a>
+          </li>
+          <li class="carousel-item">
+            <a href="https://amauta.q10.com/SolicitudesInstitucionales/NuevaSolicitudEstudiante" target="_blank" rel="noopener noreferrer" title="Solicitudes Q10">
+              <img src="sistema_tramites_q10.jpg" alt="Solicitudes Q10">
+            </a>
+          </li>
+          <li class="carousel-item">
+            <a href="https://iespamauta.novosofterp.pro/ecommerce" target="_blank" rel="noopener noreferrer" title="Tienda Virtual">
+              <img src="tienda_virtual.jpg" alt="Tienda Virtual">
+            </a>
+          </li>
+          <li class="carousel-item">
+            <a href="https://biblioteca.concytec.gob.pe/" target="_blank" rel="noopener noreferrer" title="Biblioteca Digital CONCYTEC">
+              <img src="digitaliaBibloteca.jpg" alt="Biblioteca Digital CONCYTEC">
+            </a>
+          </li>
+          <li class="carousel-item">
+            <a href="https://www.youtube.com/@ipaAmauta" target="_blank" rel="noopener noreferrer" title="Canal de YouTube">
+              <img src="canalYoutube.jpg" alt="Canal de YouTube">
+            </a>
+          </li>
+          <li class="carousel-item">
+            <a href="https://amauta-ipa.github.io/RespositorioAmauta/ini.html" target="_blank" rel="noopener noreferrer" title="Repositorio Institucional">
+              <img src="repositorioInstitucional.jpg" alt="Repositorio Institucional">
+            </a>
+          </li>
+          <li class="carousel-item">
+            <a href="https://amauta.q10.com/OfertasLaborales" target="_blank" rel="noopener noreferrer" title="Bolsa Laboral">
+              <img src="BolsaLaboral.jpg" alt="Bolsa Laboral">
+            </a>
+          </li>
+          <li class="carousel-item">
+            <a href="https://amauta.q10.com" target="_blank" rel="noopener noreferrer" title="Plataforma Q10">
+              <img src="PlataformaQ10.jpg" alt="Plataforma Q10">
+            </a>
+          </li>
+          <li class="carousel-item">
+            <a href="https://amauta-ipa.github.io/Amauta-Info/amauta+info.html" target="_blank" rel="noopener noreferrer" title="Portal Amauta+Info">
+              <img src="Amauta+Info.jpg" alt="Portal Amauta+Info">
+            </a>
+          </li>
+        </ul>
+      </div>
+      <button class="carousel-btn next" aria-label="Siguiente">&#10095;</button>
+    </section>
+  </main>
+
+  <!-- Modal PDF -->
+  <div id="pdfModal" class="modal-root" aria-hidden="true" aria-labelledby="pdfTitle" role="dialog">
+    <div class="modal-card">
+      <button class="modal-close" id="modalCloseBtn" aria-label="Cerrar">✖</button>
+
+      <div class="modal-header">
+        <div class="modal-title" id="pdfTitle">Documento</div>
+        <div class="modal-actions">
+          <a id="openInDriveBtn" target="_blank" rel="noopener noreferrer" title="Abrir en Drive">Abrir en Drive</a>
+          <a id="downloadBtn" title="Descargar PDF">Descargar</a>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <iframe id="pdfViewer" title="Visor de documento PDF"></iframe>
+      </div>
+    </div>
   </div>
 
-
-</div>
-
-        <!-- Trámites autogestionables
-        <div
-          class="bg-card p-4 rounded-lg shadow cursor-pointer hover:bg-card-hover hover:text-white transition"
-          onclick="redirectToModule('tramites')"
-        >
-          <img
-            aria-hidden="true"
-            alt="tramites-autogestionables"
-            src="https://via.placeholder.com/150"
-            class="mx-auto"
-          />
-          <h3 class="text-center mt-2">Trámites autogestionables</h3>
-        </div>-->
-
-        <!-- Solicitudes SAE 
-        <div
-          class="bg-card p-4 rounded-lg shadow cursor-pointer hover:bg-card-hover hover:text-white transition"
-          onclick="redirectToModule('solicitudes-sae')"
-        >
-          <img
-            aria-hidden="true"
-            alt="solicitudes-sae"
-            src="https://via.placeholder.com/150"
-            class="mx-auto"
-          />
-          <h3 class="text-center mt-2">Solicitudes SAE en línea</h3>
-        </div> -->
+  <!-- Footer -->
+  <footer class="relative text-white bg-primary mt-8">
+    <div class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-3 sm:px-4 py-10 max-w-7xl mx-auto">
+      <div>
+        <h4 class="font-semibold">Nosotros</h4>
+        <p class="mt-1 mb-2">Líderes en Innovación Educativa</p>
+        <a class="underline underline-offset-2" href="https://amauta.q10.com/SolicitudesInstitucionales/NuevaSolicitud" target="_blank" rel="noopener noreferrer">
+          Libro de Reclamaciones
+        </a>
+      </div>
+      <div>
+        <h4 class="font-semibold">Servicios</h4>
+        <ul class="list-disc pl-5 mt-2 space-y-1">
+          <li>Biblioteca Institucional</li>
+          <li>Atención y seguimiento al Alumno</li>
+          <li>Plataformas Institucionales</li>
+          <li>Aplicativo Móvil</li>
+          <li>Bolsa Laboral</li>
+          <li>Portal Informativo</li>
+          <li>Créditos y Cobranza</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold">Programas</h4>
+        <ul class="list-disc pl-5 mt-2 space-y-1">
+          <li>Educación Inicial</li>
+          <li>Educación Primaria</li>
+          <li>Educación Secundaria (Ciencias Sociales)</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold">Contacto</h4>
+        <p class="mt-2">Av. 9 de diciembre 321, Cercado de Lima</p>
+        <p class="mt-1">Celular: 974 329 311</p>
       </div>
     </div>
 
-<!-- Carrusel de iconos -->
-<div class="carousel-container">
-  <button class="carousel-btn prev">&#10094;</button>
-  <div class="carousel-track-container">
-    <ul class="carousel-track">
-
-  <li class="carousel-item">
-  <a href="https://www.youtube.com/shorts/Ktn_FEPxYdk" target="_blank" rel="noopener noreferrer">
-    <img src="AplicativoMovil_Amauta+.jpg" alt="icono1" 
-         style="width:150px; height:auto; object-fit:contain; border-radius:12px;">
-  </a>
-</li>
-
-<li class="carousel-item">
-  <a href="https://amauta.q10.com/SolicitudesInstitucionales/NuevaSolicitudEstudiante" target="_blank" rel="noopener noreferrer">
-    <img src="sistema_tramites_q10.jpg" alt="icono1" 
-         style="width:150px; height:auto; object-fit:contain; border-radius:12px;">
-  </a>
-</li>
-<li class="carousel-item">
-  <a href="https://iespamauta.novosofterp.pro/ecommerce" target="_blank" rel="noopener noreferrer">
-    <img src="tienda_virtual.jpg" alt="icono1" 
-         style="width:150px; height:auto; object-fit:contain; border-radius:12px;">
-  </a>
-</li>
-<li class="carousel-item">
-  <a href="https://biblioteca.concytec.gob.pe/" target="_blank" rel="noopener noreferrer">
-    <img src="digitaliaBibloteca.jpg" alt="icono1" 
-         style="width:150px; height:auto; object-fit:contain; border-radius:12px;">
-  </a>
-</li>
-<li class="carousel-item">
-  <a href="https://www.youtube.com/@ipaAmauta" target="_blank" rel="noopener noreferrer">
-    <img src="canalYoutube.jpg" alt="icono1" 
-         style="width:150px; height:auto; object-fit:contain; border-radius:12px;">
-  </a>
-</li>
-<li class="carousel-item">
-  <a href="https://amauta-ipa.github.io/RespositorioAmauta/ini.html" target="_blank" rel="noopener noreferrer">
-    <img src="repositorioInstitucional.jpg" alt="icono1" 
-         style="width:150px; height:auto; object-fit:contain; border-radius:12px;">
-  </a>
-</li>
-<li class="carousel-item">
-  <a href="https://amauta.q10.com/OfertasLaborales" target="_blank" rel="noopener noreferrer">
-    <img src="BolsaLaboral.jpg" alt="icono1" 
-         style="width:150px; height:auto; object-fit:contain; border-radius:12px;">
-  </a>
-</li>
-<li class="carousel-item">
-  <a href="https://amauta.q10.com" target="_blank" rel="noopener noreferrer">
-    <img src="PlataformaQ10.jpg" alt="icono1" 
-         style="width:150px; height:auto; object-fit:contain; border-radius:12px;">
-  </a>
-</li>
-<li class="carousel-item">
-  <a href="https://amauta-ipa.github.io/Amauta-Info/amauta+info.html" target="_blank" rel="noopener noreferrer">
-    <img src="Amauta+Info.jpg" alt="icono1" 
-         style="width:150px; height:auto; object-fit:contain; border-radius:12px;">
-  </a>
-</li>
-    </ul>
-  </div>
-  <button class="carousel-btn next">&#10095;</button>
-</div>
-
-<style>
-.carousel-container {
-  position: relative;
-  max-width: 900px;
-  margin: 40px auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.carousel-track-container {
-  overflow: hidden;
-  width: 100%;
-}
-
-.carousel-track {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-}
-
-.carousel-item {
-  min-width: 25%; /* 4 elementos visibles */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 15px;
-}
-
-.carousel-item img {
-  width: 120px;
-  height: auto;
-  object-fit: contain;
-  transition: transform 0.3s ease;
-}
-
-.carousel-item img:hover {
-  transform: scale(1.1);
-}
-
-.carousel-btn {
-  background: rgba(0, 0, 0, 0.5);
-  border: none;
-  color: white;
-  font-size: 30px;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 50%;
-  transition: background 0.3s;
-  z-index: 2;
-}
-
-.carousel-btn:hover {
-  background: rgba(0, 0, 0, 0.8);
-}
-
-.prev {
-  position: absolute;
-  left: -50px;
-}
-
-.next {
-  position: absolute;
-  right: -50px;
-}
-</style>
-
-<script>
-const track = document.querySelector(".carousel-track");
-const prevBtn = document.querySelector(".prev");
-const nextBtn = document.querySelector(".next");
-const items = document.querySelectorAll(".carousel-item");
-
-let index = 0;
-const itemsPerView = 4;
-const totalItems = items.length;
-
-function updateCarousel() {
-  const slideWidth = items[0].getBoundingClientRect().width;
-  track.style.transform = `translateX(-${index * slideWidth}px)`;
-}
-
-nextBtn.addEventListener("click", () => {
-  if (index < totalItems - itemsPerView) {
-    index++;
-    updateCarousel();
-  }
-});
-
-prevBtn.addEventListener("click", () => {
-  if (index > 0) {
-    index--;
-    updateCarousel();
-  }
-});
-</script>
-</script>
-
-<footer class="footer">
-  <div class="footer-grid">
-    <div>
-      <h4>Nosotros</h4>
-      <p style="margin:0 0 8px">Líderes en Innovación Educativa</p>
-      <a href="https://amauta.q10.com/SolicitudesInstitucionales/NuevaSolicitud" target="_blank">Libro de Reclamaciones</a>
+    <div class="relative z-10 text-center pb-6">
+      <div class="text-sm opacity-90">© 2025 Portal Informativo Institucional IPA - AMAUTA. <span class="opacity-80">Versión 2.1.0</span></div>
     </div>
-    <div>
-      <h4>Servicios</h4>
-      <ul style="margin:0;padding-left:18px">
-        <li>- Biblioteca Institucional</li>
-        <li>- Atención y seguimiento al Alumno</li>
-        <li>- Plataformas Institucionales</li>
-        <li>- Aplicativo Movil</li>
-        <li>- Bolsa Laboral</li>
-        <li>- Portal Informativo</li>
-        <li>- Créditos y Cobranza</li>
-      </ul>
-    </div>
-    <div>
-      <h4>Programas</h4>
-      <ul style="margin:0;padding-left:18px">
-        <li>- Educación Inicial</li>
-        <li>- Educación Primaria</li>
-        <li>- Educación Secundaria en especialidad Ciencias Sociales</li>
-      </ul>
-    </div>
-    <div>
-      <h4>Contacto</h4>
-      <p style="margin:0 0 8px"> -Av. 9 de diciembre 321, Cercado de Lima</p> <br>
-      <p style="margin:0"> -Celular: 974 329 311</p>
-    </div>
-  </div>
-<br>
-  <div class="copyright">© 2025 Portal Informativo Institucional IPA - AMAUTA. Versión 2.1.0</div>
 
-  <!-- Rayas verticales -->
-  <div class="v-line" style="left:5%;"></div>
-  <div class="v-line" style="left:15%;"></div>
-  <div class="v-line" style="left:25%;"></div>
-  <div class="v-line" style="left:35%;"></div>
-  <div class="v-line" style="left:50%;"></div>
-  <div class="v-line" style="left:65%;"></div>
-  <div class="v-line" style="left:80%;"></div>
-</footer>
+    <!-- Líneas verticales animadas -->
+    <div class="v-line" style="left:5%;"></div>
+    <div class="v-line" style="left:15%;"></div>
+    <div class="v-line" style="left:25%;"></div>
+    <div class="v-line" style="left:35%;"></div>
+    <div class="v-line" style="left:50%;"></div>
+    <div class="v-line" style="left:65%;"></div>
+    <div class="v-line" style="left:80%;"></div>
+  </footer>
 
-<style>
-.footer {
-  position: relative;
-  color: #fff;
-  background: #00055A;
-  padding: 40px 20px;
-  overflow: hidden;
-}
+  <!-- Scripts -->
+  <script>
+    /* ===== Utilidades de Google Drive ===== */
+    const buildDriveViewURL = (fileId) => `https://drive.google.com/file/d/${fileId}/view?usp=sharing`;
+    const buildDriveDownloadURL = (fileId) => `https://drive.google.com/uc?export=download&id=${fileId}`;
 
-.footer-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
-  gap: 20px;
-  z-index: 2;
-  position: relative;
-}
+    /* ===== Modal ===== */
+    const modalRoot = document.getElementById('pdfModal');
+    const pdfViewer = document.getElementById('pdfViewer');
+    const modalTitle = document.getElementById('pdfTitle');
+    const openInDriveBtn = document.getElementById('openInDriveBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
 
-.footer h4, .footer a, .copyright {
-  position: relative;
-  z-index: 2; /* contenido encima del fondo */
-}
+    const openPDFModal = ({ title, previewURL, fileId }) => {
+      modalTitle.textContent = title || 'Documento';
+      pdfViewer.src = previewURL || '';
+      if (fileId) {
+        openInDriveBtn.href = buildDriveViewURL(fileId);
+        downloadBtn.href = buildDriveDownloadURL(fileId);
+        downloadBtn.setAttribute('target','_blank');
+        downloadBtn.setAttribute('rel','noopener noreferrer');
+      } else {
+        openInDriveBtn.removeAttribute('href');
+        downloadBtn.removeAttribute('href');
+      }
+      modalRoot.classList.add('is-open');
+      modalRoot.setAttribute('aria-hidden', 'false');
+    };
 
-/* Rayas verticales */
-.v-line {
-  position: absolute;
-  top: -150px; /* iniciar fuera del footer */
-  width: 2px;
-  height: 150px;
-  background: rgba(0, 212, 255, 0.5);
-  border-radius: 1px;
-  animation: dropLine 6s linear infinite; /* velocidad intermedia */
-}
+    const closePDFModal = () => {
+      modalRoot.classList.remove('is-open');
+      modalRoot.setAttribute('aria-hidden', 'true');
+      pdfViewer.src = '';
+    };
 
-/* Animación de caída vertical */
-@keyframes dropLine {
-  0% { top: -150px; opacity: 0; }
-  50% { opacity: 0.6; }
-  100% { top: 100%; opacity: 0; }
-}
-</style>
+    modalCloseBtn.addEventListener('click', closePDFModal);
+    modalRoot.addEventListener('click', (e) => { if (e.target === modalRoot) closePDFModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalRoot.classList.contains('is-open')) closePDFModal(); });
+
+    // Bind a todas las cards con data-preview/fileid
+    document.querySelectorAll('.card[data-preview]').forEach(card => {
+      const title = card.getAttribute('data-title') || 'Documento';
+      const preview = card.getAttribute('data-preview') || '';
+      const fileId = card.getAttribute('data-fileid') || '';
+
+      const handler = () => openPDFModal({ title, previewURL: preview, fileId });
+      card.addEventListener('click', handler);
+      card.addEventListener('keypress', (e) => { if (e.key === 'Enter') handler(); });
+    });
+
+    /* ===== Carrusel ===== */
+    const track = document.querySelector('.carousel-track');
+    const prevBtn = document.querySelector('.carousel-btn.prev');
+    const nextBtn = document.querySelector('.carousel-btn.next');
+    const items = document.querySelectorAll('.carousel-item');
+
+    let index = 0;
+    let itemsPerView = window.innerWidth < 640 ? 2 : 4;
+    const totalItems = items.length;
+
+    const updateCarousel = () => {
+      itemsPerView = window.innerWidth < 640 ? 2 : 4;
+      const slideWidth = items[0].getBoundingClientRect().width;
+      track.style.transform = `translateX(-${index * slideWidth}px)`;
+    };
+
+    nextBtn.addEventListener('click', () => {
+      if (index < totalItems - itemsPerView) { index++; updateCarousel(); }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (index > 0) { index--; updateCarousel(); }
+    });
+
+    window.addEventListener('resize', updateCarousel);
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
