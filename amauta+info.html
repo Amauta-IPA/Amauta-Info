@@ -704,6 +704,46 @@
   }
 }
 
+    /* Difumina el borde de la fotografía */
+.hero-image {
+  opacity: 1;
+  filter: none;
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, .15) 12%,
+    rgba(0, 0, 0, .45) 25%,
+    rgba(0, 0, 0, .80) 40%,
+    #000 58%,
+    #000 100%
+  );
+
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, .15) 12%,
+    rgba(0, 0, 0, .45) 25%,
+    rgba(0, 0, 0, .80) 40%,
+    #000 58%,
+    #000 100%
+  );
+}
+
+/* El azul disminuye progresivamente hacia la chica */
+.hero::before {
+  background: linear-gradient(
+    to right,
+    rgba(8, 13, 53, .96) 0%,
+    rgba(8, 13, 53, .90) 15%,
+    rgba(8, 13, 53, .76) 30%,
+    rgba(8, 13, 53, .54) 45%,
+    rgba(8, 13, 53, .30) 60%,
+    rgba(8, 13, 53, .12) 75%,
+    rgba(8, 13, 53, .03) 90%,
+    transparent 100%
+  );
+}
 
     
   </style>
