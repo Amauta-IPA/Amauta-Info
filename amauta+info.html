@@ -569,6 +569,142 @@
 .platform-track::-webkit-scrollbar {
   display: none;
 }
+
+/* Portada: imagen más clara y con menos oscurecimiento */
+.hero-image {
+  opacity: 1;
+  filter: none;
+}
+
+.hero::before {
+  background: linear-gradient(
+    90deg,
+    rgba(8, 13, 53, .96) 0%,
+    rgba(8, 13, 53, .82) 32%,
+    rgba(8, 13, 53, .30) 60%,
+    rgba(8, 13, 53, .06) 100%
+  );
+}
+
+/* Botón Q10: texto e icono blancos */
+.nav a.button-primary,
+.nav a.button-primary:hover,
+.nav a.button-primary:focus-visible,
+.nav a.button-primary:visited {
+  color: #fff;
+}
+
+/* Tarjetas de recursos más amplias */
+.resource-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.resource-card {
+  padding: 27px;
+  border-radius: 19px;
+  min-height: 255px;
+}
+
+.resource-top {
+  margin-bottom: 24px;
+}
+
+.resource-image {
+  width: 70px;
+  height: 70px;
+  padding: 8px;
+  border-radius: 15px;
+}
+
+.resource-card h3 {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 11px;
+}
+
+.resource-description {
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 22px;
+}
+
+.resource-action {
+  padding-top: 17px;
+  font-size: 12px;
+}
+
+/* Adaptación a tablet y celular */
+@media (max-width: 1000px) {
+  .resource-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero-image {
+    opacity: 1;
+  }
+
+  .hero::before {
+    background: linear-gradient(
+      90deg,
+      rgba(8, 13, 53, .90) 0%,
+      rgba(8, 13, 53, .70) 50%,
+      rgba(8, 13, 53, .28) 100%
+    );
+  }
+
+  .resource-grid {
+    gap: 14px;
+  }
+
+  .resource-card {
+    padding: 20px;
+    min-height: 245px;
+  }
+
+  .resource-top {
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .resource-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .resource-category {
+    text-align: left;
+  }
+
+  .resource-card h3 {
+    font-size: 14px;
+  }
+
+  .resource-description {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .resource-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .resource-card {
+    min-height: auto;
+    padding: 24px;
+  }
+
+  .resource-card h3 {
+    font-size: 16px;
+  }
+}
+
+
     
   </style>
 
@@ -991,6 +1127,7 @@
           image: "robot_ipa.png",
           url: "https://monica.im/share/bot?botId=qcAnZLpM"
         },
+     
         {
           title: "Certificaciones progresivas",
           category: "Vida estudiantil",
@@ -1092,10 +1229,10 @@
       ];
 
       const platforms = [
-        ["Aplicativo móvil Amauta+", "AplicativoMovil_Amauta+.jpg", "https://www.youtube.com/shorts/Ktn_FEPxYdk"],
+        ["Aplicativo móvil Amauta+", "AplicativoMovil_Amauta+.jpg", "https://play.google.com/store/apps/details?id=com.q10soluciones.amauta&hl=es_PE"],
         ["Solicitudes Q10", "sistema_tramites_q10.jpg", "https://amauta.q10.com/SolicitudesInstitucionales/NuevaSolicitudEstudiante"],
-        ["Tienda virtual", "tienda_virtual.jpg", "https://iespamauta.novosofterp.pro/ecommerce"],
-        ["Biblioteca CONCYTEC", "digitaliaBibloteca.jpg", "https://biblioteca.concytec.gob.pe/"],
+        ["Tienda virtual", "tienda_virtual.jpg", "https://iespamauta.pseperu.com/ecommerce"],
+        ["Biblioteca Digitalia", "digitaliaBibloteca.jpg", "https://www.digitaliapublishing.com/?code=QHB203P23SP8GHF1EQQ9GCS0ST/"],
         ["Canal de YouTube", "canalYoutube.jpg", "https://www.youtube.com/@ipaAmauta"],
         ["Repositorio institucional", "repositorioInstitucional.jpg", "https://amauta-ipa.github.io/RespositorioAmauta/ini.html"],
         ["Bolsa laboral", "BolsaLaboral.jpg", "https://amauta.q10.com/OfertasLaborales"],
